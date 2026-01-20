@@ -1,42 +1,45 @@
-name: Build and Push to ACR
+name: DockerHub to ACR
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [ "main" ]
 
 jobs:
-  build-and-push:
+  push-to-acr:
     runs-on: ubuntu-latest
 
-    permissions:
-      id-token: write
-      contents: read
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Log in to Azure
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+    # ---- Login to Docker Hub ----
+    - name: Docker Hub Login
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Azure CLI - Login to ACR
-        run: |
-          az acr login --name <ACR_NAME>  # e.g. myregistry
+    # ---- Pull image from Docker Hub ----
+    - name: Pull image from Docker Hub
+      run: |
+        docker pull mydockerhubusername/myapp:latest
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+    # ---- Azure Login ----
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build Docker image
-        run: |
-          IMAGE_TAG=${GITHUB_SHA::7}
-          docker build -t <ACR_LOGIN_SERVER>/<IMAGE_NAME>:latest -t <ACR_LOGIN_SERVER>/<IMAGE_NAME>:$IMAGE_TAG .
+    # ---- Login to ACR ----
+    - name: Login to ACR
+      run: az acr login --name ${{ secrets.ACR_NAME }}
 
-      - name: Push Docker image to ACR
-        run: |
-          IMAGE_TAG=${GITHUB_SHA::7}
-          docker push <ACR_LOGIN_SERVER>/<IMAGE_NAME>:latest
-          docker push <ACR_LOGIN_SERVER>/<IMAGE_NAME>:$IMAGE_TAG
+    # ---- Tag Docker Hub image for ACR ----
+    - name: Tag image for ACR
+      run: |
+        docker tag mydockerhubusername/myapp:latest ${{ secrets.ACR_NAME }}.azurecr.io/myapp:latest
+
+    # ---- Push image to ACR ----
+    - name: Push image to ACR
+      run: |
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/myapp:latest
