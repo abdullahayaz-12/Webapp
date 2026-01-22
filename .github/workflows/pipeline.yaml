@@ -1,45 +1,49 @@
-name: DockerHub to ACR
+name: Build & Push Docker to ACR
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  push-to-acr:
+  build-push-acr:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Checkout repository
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # ---- Login to Docker Hub ----
-    - name: Docker Hub Login
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-
-    # ---- Pull image from Docker Hub ----
-    - name: Pull image from Docker Hub
-      run: |
-        docker pull mydockerhubusername/myapp:latest
-
-    # ---- Azure Login ----
+    # Step 2: Login to Azure
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    # ---- Login to ACR ----
-    - name: Login to ACR
+    # Step 3: Login to ACR
+    - name: Login to Azure Container Registry
       run: az acr login --name ${{ secrets.ACR_NAME }}
 
-    # ---- Tag Docker Hub image for ACR ----
+    # Step 4: Build Docker image locally
+    - name: Build Docker image
+      run: |
+        IMAGE_TAG=react-app:${{ github.sha }}
+        docker build -t $IMAGE_TAG .
+
+    # Step 5: Tag image for ACR
     - name: Tag image for ACR
       run: |
-        docker tag mydockerhubusername/myapp:latest ${{ secrets.ACR_NAME }}.azurecr.io/myapp:latest
+        IMAGE_TAG=react-app:${{ github.sha }}
+        docker tag $IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
 
-    # ---- Push image to ACR ----
+    # Step 6: Push image to ACR
     - name: Push image to ACR
       run: |
-        docker push ${{ secrets.ACR_NAME }}.azurecr.io/myapp:latest
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
+
+    # Step 7: Deploy to Azure Container App
+    - name: Deploy to Azure Container App
+      run: |
+        az containerapp update \
+          --name ${{ secrets.CONTAINER_APP_NAME }} \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --image ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
