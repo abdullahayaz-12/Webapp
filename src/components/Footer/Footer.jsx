@@ -13,7 +13,8 @@ const Footer = () => {
                         <div className="footer-logo">
                             <img src={footerlogo} alt="" />
                         </div>
-                        <p className='address'>Contact us our 24/7 customer support:
+                        <p className='address'>I am Hassan Sajid, CEO of Swiftboost.GG<br />
+                        1234 Street Name, City, State, 12345<br />
                             support@swiftboost.gg</p>
                     </div>
                     <div className="col-lg-2">
