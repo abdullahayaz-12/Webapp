@@ -15,41 +15,46 @@ jobs:
 
     # Step 2: Login to Azure
     - name: Azure Login
-      uses: azure/login@v1
+      uses: azure/login@v2
       # Alternatively, you can use individual parameters like
       with:
-        clientSecret: ${{ secrets.AZURE_CLIENT_SECRET }}
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        auth-type: ID_TOKEN
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    # Step 3: Login to ACR
-    - name: Login to Azure Container Registry
-      run: az acr login --name ${{ secrets.ACR_NAME }}
+    - name: set azure sub
+      run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    # Step 4: Build Docker image locally
-    - name: Build Docker image
-      run: |
-        IMAGE_TAG=react-app:${{ github.sha }}
-        docker build -t $IMAGE_TAG .
+        # clientSecret: ${{ secrets.AZURE_CLIENT_SECRET }}
+        # client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        # tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        # subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        # auth-type: ID_TOKEN
 
-    # Step 5: Tag image for ACR
-    - name: Tag image for ACR
-      run: |
-        IMAGE_TAG=react-app:${{ github.sha }}
-        docker tag $IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
+    # # Step 3: Login to ACR
+    # - name: Login to Azure Container Registry
+    #   run: az acr login --name ${{ secrets.ACR_NAME }}
 
-    # Step 6: Push image to ACR
-    - name: Push image to ACR
-      run: |
-        docker push ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
+    # # Step 4: Build Docker image locally
+    # - name: Build Docker image
+    #   run: |
+    #     IMAGE_TAG=react-app:${{ github.sha }}
+    #     docker build -t $IMAGE_TAG .
 
-    # Step 7: Deploy to Azure Container App
-    - name: Deploy to Azure Container App
-      run: |
-        az containerapp update \
-          --name ${{ secrets.CONTAINER_APP_NAME }} \
-          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
+    # # Step 5: Tag image for ACR
+    # - name: Tag image for ACR
+    #   run: |
+    #     IMAGE_TAG=react-app:${{ github.sha }}
+    #     docker tag $IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
+
+    # # Step 6: Push image to ACR
+    # - name: Push image to ACR
+    #   run: |
+    #     docker push ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
+
+    # # Step 7: Deploy to Azure Container App
+    # - name: Deploy to Azure Container App
+    #   run: |
+    #     az containerapp update \
+    #       --name ${{ secrets.CONTAINER_APP_NAME }} \
+    #       --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+    #       --image ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
 
