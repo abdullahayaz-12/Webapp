@@ -41,10 +41,10 @@ jobs:
         IMAGE_TAG=react-app:${{ github.sha }}
         docker tag $IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
 
-    # # Step 6: Push image to ACR
-    # - name: Push image to ACR
-    #   run: |
-    #     docker push ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
+    # Step 6: Push image to ACR
+    - name: Push image to ACR
+      run: |
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
 
     # # Step 7: Deploy to Azure Container App
     # - name: Deploy to Azure Container App
