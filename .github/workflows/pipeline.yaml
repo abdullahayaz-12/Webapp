@@ -27,7 +27,8 @@ jobs:
 
     # Step 3: Login to ACR
     - name: Login to Azure Container Registry
-      run: az acr login --name xhasanAcr4785adab
+      run: az acr login --name ${{ secrets.ACR_NAME }}
+
 
 
     # Step 4: Build Docker image locally
