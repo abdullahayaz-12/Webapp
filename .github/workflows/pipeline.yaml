@@ -47,9 +47,10 @@ jobs:
     # Step 7: Deploy to Azure Container App
     - name: Deploy to Azure Container App
       run: |
-        az containerapp update \
-          --name xhasanxxx9cb708b8 \
-          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-          --image xhasanacr4785adab.azurecr.io/myapp:latest
-          
+        az containerapp update 
+        --name xhasanxxx9cb708b8 
+        --resource-group hassan 
+        --image xhasanacr4785adab.azurecr.io/myapp:latest 
+        --output json
+
 
