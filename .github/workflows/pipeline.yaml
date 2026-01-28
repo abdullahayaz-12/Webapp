@@ -25,7 +25,7 @@ jobs:
 
     # Step 3: Login to ACR
     - name: Login to Azure Container Registry
-      run: az acr login --name xhasanacr4785adab
+      run: az acr login --name xhasn8084
 
     # Step 4: Build Docker image locally
     - name: Build Docker image
@@ -48,7 +48,7 @@ jobs:
     - name: Deploy to Azure Container App
       run: |
         az containerapp update \
-        --name xhasanxxx9cb708b8 \
+        --name xhasn8084 \
         --resource-group hassan \
         --image xhasanacr4785adab.azurecr.io/myapp:v1.0
 
