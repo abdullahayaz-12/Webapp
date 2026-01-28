@@ -23,30 +23,26 @@ jobs:
     - name: Set Azure subscription
       run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-        
-
     # Step 3: Login to ACR
     - name: Login to Azure Container Registry
-      run: az acr login --name ${{ secrets.ACR_NAME }}
-
-
+      run: az acr login --name xhasanAcr4785adab
 
     # Step 4: Build Docker image locally
     - name: Build Docker image
       run: |
-        IMAGE_TAG=myapp:${{ github.sha }}
+        IMAGE_TAG=myapp:latest
         docker build -t $IMAGE_TAG .
 
     # Step 5: Tag image for ACR
     - name: Tag image for ACR
       run: |
-        IMAGE_TAG=myapp:${{ github.sha }}
-        docker tag $IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/myapp:${{ github.sha }}
+        IMAGE_TAG=myapp:latest
+        docker tag $IMAGE_TAG xhasanAcr4785adab.azurecr.io/myapp:latest
 
     # Step 6: Push image to ACR
     - name: Push image to ACR
       run: |
-        docker push ${{ secrets.ACR_NAME }}.azurecr.io/myapp:${{ github.sha }}
+        docker push xhasanAcr4785adab.azurecr.io/myapp:latest
 
     # Step 7: Deploy to Azure Container App
     - name: Deploy to Azure Container App
@@ -54,5 +50,5 @@ jobs:
         az containerapp update \
           --name ${{ secrets.CONTAINER_APP_NAME }} \
           --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/myapp:${{ github.sha }}
+          --image xhasanAcr4785adab.azurecr.io/myapp:latest
 
