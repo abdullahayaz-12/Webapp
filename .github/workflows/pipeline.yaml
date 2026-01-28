@@ -30,19 +30,19 @@ jobs:
     # Step 4: Build Docker image locally
     - name: Build Docker image
       run: |
-        IMAGE_TAG=myapp:latest
+        IMAGE_TAG=myapp:v1.0
         docker build -t $IMAGE_TAG .
 
     # Step 5: Tag image for ACR
     - name: Tag image for ACR
       run: |
-        IMAGE_TAG=myapp:latest
-        docker tag $IMAGE_TAG xhasanacr4785adab.azurecr.io/myapp:latest
+        IMAGE_TAG=myapp:v1.0
+        docker tag $IMAGE_TAG xhasanacr4785adab.azurecr.io/myapp:v1.0
 
     # Step 6: Push image to ACR
     - name: Push image to ACR
       run: |
-        docker push xhasanacr4785adab.azurecr.io/myapp:latest
+        docker push xhasanacr4785adab.azurecr.io/myapp:v1.0
 
     # Step 7: Deploy to Azure Container App
     - name: Deploy to Azure Container App
@@ -50,7 +50,7 @@ jobs:
         az containerapp update \
         --name xhasanxxx9cb708b8 \
         --resource-group hassan \
-        --image xhasanacr4785adab.azurecr.io/myapp:latest
+        --image xhasanacr4785adab.azurecr.io/myapp:v1.0
 
 
 
