@@ -51,7 +51,7 @@ jobs:
           --name xhasanxxx9cb708b8 \
           --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
           --image xhasanacr4785adab.azurecr.io/myapp:latest
-          --target-port 80 \
+          --target-port 81 \
           --ingress external
           --output none
 
