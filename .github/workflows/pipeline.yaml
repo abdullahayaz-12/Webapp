@@ -39,7 +39,7 @@ jobs:
     - name: Tag image for ACR
       run: |
         IMAGE_TAG=react-app:${{ github.sha }}
-        docker tag $IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/react-app:${{ github.sha }}
+        docker tag $IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/myapp:${{ github.sha }}
 
     # Step 6: Push image to ACR
     - name: Push image to ACR
