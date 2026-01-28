@@ -32,13 +32,13 @@ jobs:
     # Step 4: Build Docker image locally
     - name: Build Docker image
       run: |
-        IMAGE_TAG=react-app:${{ github.sha }}
+        IMAGE_TAG=myapp:${{ github.sha }}
         docker build -t $IMAGE_TAG .
 
     # Step 5: Tag image for ACR
     - name: Tag image for ACR
       run: |
-        IMAGE_TAG=react-app:${{ github.sha }}
+        IMAGE_TAG=myapp:${{ github.sha }}
         docker tag $IMAGE_TAG ${{ secrets.ACR_NAME }}.azurecr.io/myapp:${{ github.sha }}
 
     # Step 6: Push image to ACR
